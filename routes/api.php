@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +31,9 @@ Route::middleware('auth:sanctum')->get('/cards/{card_id}', 'ConnexionController@
 Route::middleware('auth:sanctum')->post('/transaction', 'ConnexionController@addTransaction');
 
 Route::middleware('auth:sanctum')->post('/logout', 'ConnexionController@logout');
+
+Route::get('/test', function (Request $request){
+    $vendeuradress = env('VENDEURIP').'/'.$request->order_id;
+    $response = Http::post($vendeuradress);
+    return $response;
+} );

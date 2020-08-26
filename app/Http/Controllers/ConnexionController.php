@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Http;
 
 class ConnexionController extends Controller
 {
@@ -79,12 +80,18 @@ class ConnexionController extends Controller
         $card->save();
         $account->save();
 
+        $user_id =  $request->user()->id;
         $transaction = new Transaction();
-        $transaction->user_id = $request->user()->id;
+        $transaction->user_id = $user_id;
         $transaction->account_id = $account->id;
         $transaction->ammount = $request->ammount;
         $transaction->save();
-
+        $vendeuradress = env('VENDEURIP');
+        $response = Http::post($vendeuradress, [
+            'order_id' =>  request('order_id'),
+            'vendeur_id' => request('vendeur_id')
+        ]);
+        return $response;
         return response([
             'message' => 'success',
         ], 200);
